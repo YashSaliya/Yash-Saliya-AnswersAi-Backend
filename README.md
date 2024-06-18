@@ -12,8 +12,6 @@ AnswersAi Backend is a scalable and secure backend service built on Node.js and 
 - [Testing](#testing)
 - [Deployment](#deployment)
 - [Architecture](#architecture)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 
@@ -75,15 +73,257 @@ npm start
 
 ## API Endpoints
 
-- **POST /api/auth/register:** Register a new user.
-- **POST /api/auth/login:** Login user and get JWT token.
-- **POST /api/auth/logout:** Logout user (token invalidation).
-- **POST /api/auth/refresh:** Refresh access token.
-- **POST /api/questions:** Create a new question and get AI-generated answer.
-- **GET /api/questions/:id:** Retrieve a specific question and answer.
-- **POST /api/users:** Create a new user account.
-- **GET /api/users/:id:** Retrieve a user profile by ID.
-- **GET /api/users/:id/questions:** Retrieve all questions asked by a user.
+This section outlines the available API endpoints and their functionalities, including request and response structures.
+
+### Authentication
+
+#### POST `/api/auth/register`
+
+**Description:** Registers a new user with the system.
+
+**Request Body:**
+
+```json
+{
+"email": "john.doe@example.com",
+"password": "securepassword123"
+}
+```
+
+* **email (string, required):** User's email address.
+* **password (string, required):** User's password.
+
+**Response:**
+
+```json
+{
+"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+"user": {
+"_id": "60d6e1d2bcf2e1410c118356",
+"email": "john.doe@example.com"
+}
+}
+```
+
+* **token (string):** JWT token for authentication.
+* **user (object):** User object with basic details.
+
+#### POST `/api/auth/login`
+
+**Description:** Logs in an existing user.
+
+**Request Body:**
+
+```json
+{
+"email": "john.doe@example.com",
+"password": "securepassword123"
+}
+```
+
+* **email (string, required):** User's email address.
+* **password (string, required):** User's password.
+
+**Response:**
+
+```json
+{
+"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+"user": {
+"_id": "60d6e1d2bcf2e1410c118356",
+"email": "john.doe@example.com"
+}
+}
+```
+
+* **token (string):** JWT token for authentication.
+* **user (object):** User object with basic details.
+
+#### POST `/api/auth/logout`
+
+**Description:** Logs out the current user (token invalidation).
+
+**Authorization:** Bearer token required.
+
+**Response:**
+
+```json
+{
+"message": "Logout successful"
+}
+```
+
+* **message (string):** Logout successful confirmation.
+
+#### POST `/api/auth/refresh`
+
+**Description:** Refreshes the JWT access token.
+
+**Request Body:**
+
+```json
+{
+"refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+* **refreshToken (string, required):** Refresh token to obtain a new access token.
+
+**Response:**
+
+```json
+{
+"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+* **token (string):** New JWT access token.
+
+### Questions
+
+#### POST `/api/questions`
+
+**Description:** Creates a new question and retrieves an AI-generated answer.
+
+**Authorization:** Bearer token required.
+
+**Request Body:**
+
+```json
+{
+"content": "What is the capital of France?"
+}
+```
+
+* **content (string, required):** User's question content.
+
+**Response:**
+
+```json
+{
+"userId": "60d6e1d2bcf2e1410c118356",
+"content": "What is the capital of France?",
+"answer": "Paris"
+}
+```
+
+* **userId (string):** ID of the user who asked the question.
+* **content (string):** User's question content.
+* **answer (string):** AI-generated answer to the question.
+
+#### GET `/api/questions/{questionId}`
+
+**Description:** Retrieves a specific question and its answer by question ID.
+
+**Authorization:** Bearer token required.
+
+**URL Parameters:**
+
+* **questionId (string, required):** ID of the question to retrieve.
+
+**Example:** `/api/questions/60d6e1d2bcf2e1410c118356`
+
+**Response:**
+
+```json
+{
+"userId": "60d6e1d2bcf2e1410c118356",
+"content": "What is the capital of France?",
+"answer": "Paris"
+}
+```
+
+* **userId (string):** ID of the user who asked the question.
+* **content (string):** User's question content.
+* **answer (string):** AI-generated answer to the question.
+
+### Users
+
+#### POST `/api/users`
+
+**Description:** Creates a new user account.
+
+**Request Body:**
+
+```json
+{
+"email": "jane.doe@example.com",
+"password": "securepassword456"
+}
+```
+
+* **email (string, required):** User's email address.
+* **password (string, required):** User's password.
+
+**Response:**
+
+```json
+{
+"_id": "60d6e1d2bcf2e1410c118357",
+"email": "jane.doe@example.com"
+}
+```
+
+* **_id (string):** ID of the newly created user.
+* **email (string):** User's email address.
+
+#### GET `/api/users/{userId}`
+
+**Description:** Retrieves a user profile by user ID.
+
+**Authorization:** Bearer token required.
+
+**URL Parameters:**
+
+* **userId (string, required):** ID of the user to retrieve.
+
+**Example:** `/api/users/60d6e1d2bcf2e1410c118357`
+
+**Response:**
+
+```json
+{
+"_id": "60d6e1d2bcf2e1410c118357",
+"email": "jane.doe@example.com"
+}
+```
+
+* **_id (string):** ID of the user.
+* **email (string):** User's email address.
+
+#### GET `/api/users/{userId}/questions`
+
+**Description:** Retrieves all questions asked by a user.
+
+**Authorization:** Bearer token required.
+
+**URL Parameters:**
+
+* **userId (string, required):** ID of the user to retrieve questions for.
+
+**Example:** `/api/users/60d6e1d2bcf2e1410c118357/questions`
+
+**Response:**
+
+```json
+[
+{
+"userId": "60d6e1d2bcf2e1410c118357",
+"content": "What is the capital of France?",
+"answer": "Paris"
+},
+{
+"userId": "60d6e1d2bcf2e1410c118357",
+"content": "Who is the president of the USA?",
+"answer": "Joe Biden"
+}
+]
+```
+
+* **Array of question objects:** Each containing:
+* **userId (string):** ID of the user who asked the question.
+* **content (string):** User's question content.
+* **answer (string):** AI-generated answer to the question.
 
 ## Testing
 
@@ -110,11 +350,3 @@ docker-compose up --build
 ## Architecture
 
 The architecture includes components like:
-
-- EC2 Instances
-- ECS Clusters
-- RDS Database (MySQL/PostgreSQL)
-- Load Balancer (ELB/ALB)
-- Auto Scaling Groups
-- CloudWatch for monitoring
-- SNS for notifications
