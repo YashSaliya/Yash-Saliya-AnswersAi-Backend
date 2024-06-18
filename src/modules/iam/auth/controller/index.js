@@ -7,12 +7,13 @@ exports.login = async (req, res) => {
   if (!token) {
     return res.status(401).json({ message: "Invalid email or password" });
   }
-
-  res.json({ token, user });
+  res.setHeader("Authorization", `Bearer ${token}`);
+  res.json({ user });
 };
 
 exports.logout = (req, res) => {
-  res.json({ message: "Logout successful" });
+  res.removeHeader("Authorization");
+  res.json({});
 };
 
 exports.refreshToken = (req, res) => {
@@ -23,6 +24,7 @@ exports.refreshToken = (req, res) => {
     return res.status(401).json({ message: "Invalid refresh token" });
   }
 
+  res.setHeader("Authorization", `Bearer ${token}`);
   res.json({ token });
 };
 
@@ -36,7 +38,8 @@ exports.register = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    res.status(201).json({ token, user });
+    res.setHeader("Authorization", `Bearer ${token}`);
+    res.status(201).json({ user });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
