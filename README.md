@@ -348,5 +348,6 @@ docker-compose up --build
 1. Deploy the application to AWS/GCP using ECS, EC2, RDS, and other managed services. Refer to the architecture diagram for details.
 
 ## Architecture
+![Architecture](https://github.com/YashSaliya/api/assets/79741768/5f3ebae0-23bd-455c-8d2f-ea3d2ed67d65)
 
-The architecture includes components like:
+
